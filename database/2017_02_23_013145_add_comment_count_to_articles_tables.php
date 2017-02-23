@@ -14,7 +14,7 @@ class AddCommentCountToArticlesTables extends Migration
     public function up()
     {
         Schema::table('articles', function (Blueprint $table) {
-            $table->mediumInteger('comment_count')->unsigned();
+            $table->mediumInteger('comment_count')->unsigned()->default(0);
         });
     }
 

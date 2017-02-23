@@ -18,7 +18,7 @@ class CreateArticlesTable extends Migration
             $table->integer('user_id')->unsigned()->index();
             $table->integer('cate_id')->unsigned()->index();
             $table->string('title')->nullable(false);
-            $table->text('description');
+            $table->text('description')->default('');
             $table->text('content')->nullable(false);
             $table->string('imgurl');
             $table->integer('view_count')->unsigned()->default(0);
