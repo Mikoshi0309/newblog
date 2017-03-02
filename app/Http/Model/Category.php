@@ -53,9 +53,9 @@ class Category extends Model
         }
     }
 
-    public static function GetArticleByCategory($id){
+    public static function GetArticleByCategory($id,$page=10){
         $childrenIds= self::GetChildrenIdsList($id);
-        $article = Article::select(Article::selectSimpleField)->with('user')->where('cate_id',$id)->orWhereIn('cate_id',$childrenIds)->orderBy('created_at','desc')->paginate(10);
+        $article = Article::select(Article::selectSimpleField)->with('user')->where('cate_id',$id)->orWhereIn('cate_id',$childrenIds)->orderBy('created_at','desc')->paginate($page);
         foreach($article as $v){
             $v->imageurl = '/uploads/'.$v->imageurl;
         }

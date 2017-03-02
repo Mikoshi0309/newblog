@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Model\Category;
+use App\Http\Repository\CategoryRepository;
 use App\Http\Requests\CategoryRequest;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -10,6 +11,13 @@ use Illuminate\Support\Facades\Validator;
 
 class CategoryController extends Controller
 {
+    protected $categoryRepository;
+
+    public function __construct(CategoryRepository $categoryRepository)
+    {
+        $this->categoryRepository = $categoryRepository;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -51,6 +59,7 @@ class CategoryController extends Controller
 //        if($vali->passes()){
             $cate = Category::create($data);
             if($cate){
+                $this->categoryRepository->clear();
                 return redirect('admin/category');
             }else{
                 return redirect('admin/category/create')->withErrors('插入失败')->withInput();
@@ -104,6 +113,7 @@ class CategoryController extends Controller
 //        if($vali->passes()){
             $val = Category::where('id',$id)->update($data);
             if($val){
+                $this->categoryRepository->clear();
                 return redirect('admin/category');
             }else{
                 return redirect('admin/category/'.$id.'/edit')->withErrors('修改错误')->withInput();
@@ -123,6 +133,7 @@ class CategoryController extends Controller
     {
         $re = Category::delCategory($id);
         if($re){
+            $this->categoryRepository->clear();
             $data = [
                 'status' => 0,
                 'msg' => '删除成功'

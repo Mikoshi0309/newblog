@@ -81,4 +81,9 @@ class Article extends Model
     protected function scopeStatus($query){
         return $query->where('status',1);
     }
+
+    public function getImageurlAttribute($value){
+        return '/uploads/'.$value;
+    }
+
 }

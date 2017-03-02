@@ -6,6 +6,7 @@ use App\Events\CategorycCount;
 use App\Http\Model\Article;
 use App\Http\Model\Category;
 use App\Http\Model\Tag;
+use App\Http\Repository\ArticleRepository;
 use App\Http\Requests\ArticleRequest;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -21,6 +22,13 @@ class ArticleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    protected $articleRepository;
+
+    public function __construct(ArticleRepository $articleRepository)
+    {
+        $this->articleRepository = $articleRepository;
+    }
+
     public function index()
     {
         $data = Article::with('category')->orderBy('created_at', 'desc')->get();
@@ -78,6 +86,7 @@ class ArticleController extends Controller
             $re = Auth::user()->articles()->create($data);
 
             if($re){
+                $this->articleRepository->clear();
                 Event::fire(new CategorycCount(Category::find($data['cate_id'])));
                 if(!empty($ids))
                     $re->tags()->sync($ids);
@@ -113,7 +122,7 @@ class ArticleController extends Controller
         $category_data = Category::getCategoryTree();
         $tags = Tag::all();
         $data = Article::find($id);
-        $data['imageurl'] = '/uploads/'.$data['imageurl'];
+        //$data['imageurl'] = '/uploads/'.$data['imageurl'];
 
         return view('admin.article.edit',compact('category_data','tags','data'));
     }
@@ -162,7 +171,7 @@ class ArticleController extends Controller
             $article = Article::find($id);
             $re = Auth::user()->articles()->where('id',$id)->update($data);
             if($re){
-
+                $this->articleRepository->clear();
                 if(intval($article->cate_id) != intval($data['cate_id'])){
                     Category::where('id',$article->cate_id)->decrement('count');
                     Event::fire(new CategorycCount(Category::find($data['cate_id'])));
@@ -190,6 +199,7 @@ class ArticleController extends Controller
     {
         $re = Article::where('id',$id)->delete();
         if($re){
+            $this->articleRepository->clear();
             return $data = [
                 'status' => 0,
                 'message' => '删除成功'
