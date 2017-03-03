@@ -22,6 +22,8 @@ class SinaLoginController extends Controller
     static $web_skey;
     static $wb_callback_url;
 
+    private $code=[];
+
     public function __construct()
     {
         self::$web_akey = Config::get('sina.wb_akey');
@@ -32,16 +34,9 @@ class SinaLoginController extends Controller
     public function callback(Request $request){
         $key = $request->only('code');
         $token = Cache::get('sina_token');
+        $this->code = $request->only('code');
         if(!$token){
-            $key = $request->only('code');
-            $sina_auth = new SaeTOAuthV2( self::$web_akey , self::$web_skey  );
-            $key['redirect_uri'] = self::$wb_callback_url;
-            try {
-                $sina_token = $sina_auth->getAccessToken( 'code', $key ) ;
-                $token = $sina_token['access_token'];
-                Cache::put('sina_token',$token,$sina_token['expires_in']);
-            } catch (\Exception $e) {
-            }
+           $token = $this->getToken();
         }
         $this->checkexist($token);
         $article_count = Article::count();
@@ -55,6 +50,11 @@ class SinaLoginController extends Controller
     private function checkexist($token){
         $sina_data = new SaeTClientV2( self::$web_akey, self::$web_skey , $token );
         $uid_get = $sina_data->get_uid();
+        if(!collect($uid_get)->has('uid')){
+            $token = $this->getToken($this->code['code']);
+            $sina_data = new SaeTClientV2( self::$web_akey, self::$web_skey , $token );
+            $uid_get = $sina_data->get_uid();
+        }
         $user_data = $sina_data->show_user_by_id( $uid_get['uid']);
         $u_exist_data = User::select(['id','name'])->where('u_from_id',$user_data['id'])->get();
         $u_exist_data = $u_exist_data->flatten()->all();
@@ -73,5 +73,18 @@ class SinaLoginController extends Controller
             $id = $u_exist_data[0]['id'];
         }
         Auth::login(User::find($id));
+    }
+
+    private function getToken(){
+        $sina_token = [];
+
+        $sina_auth = new SaeTOAuthV2( self::$web_akey , self::$web_skey  );
+        $this->code['redirect_uri'] = self::$wb_callback_url;
+        try {
+            $sina_token = $sina_auth->getAccessToken( 'code', $this->code) ;
+            Cache::put('sina_token',$sina_token['access_token'],$sina_token['expires_in']);
+        } catch (\Exception $e) {
+        }
+        return $sina_token['access_token'];
     }
 }
