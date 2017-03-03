@@ -59,6 +59,13 @@
                                 </a>
                             </div>
                         </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-4 col-sm-6">
+                                <a href="{{ $code_url }}"><image src="{{ asset('images/weibo.png') }}" width="20px" height="20px" /></a>
+
+                            </div>
+
+                        </div>
                     </form>
                 </div>
             </div>

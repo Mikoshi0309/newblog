@@ -17,6 +17,9 @@ Route::post('/search', 'IndexController@search');
 Route::get('/cate/{id}', 'IndexController@cate_article');
 Route::post('/comment', 'IndexController@comment');
 
+Route::get('/sinalogin', 'SinaLoginController@login');
+Route::get('/callback', 'SinaLoginController@callback');
+
 
 
 Route::group(['middleware'=>['auth'],'prefix'=>'admin','namespace'=>'Admin'],function(){

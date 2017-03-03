@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Support\Facades\Config;
+
 
 class LoginController extends Controller
 {
@@ -20,6 +22,11 @@ class LoginController extends Controller
 
     use AuthenticatesUsers;
 
+    //新浪微博登录字段
+    static $web_akey;
+    static $web_skey;
+    static $wb_callback_url;
+
     /**
      * Where to redirect users after login.
      *
@@ -34,6 +41,9 @@ class LoginController extends Controller
      */
     public function __construct()
     {
+        self::$web_akey = Config::get('sina.wb_akey');
+        self::$web_skey = Config::get('sina.wb_skey');
+        self::$wb_callback_url = Config::get('sina.wb_callback_url');
         $this->middleware('guest', ['except' => 'logout']);
     }
 }
