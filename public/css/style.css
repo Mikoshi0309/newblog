@@ -16,7 +16,7 @@ h1 small { text-align:left; float:right; width:190px;  color:#fff; display:block
 h2 { font:normal 24px Arial, Helvetica, sans-serif; padding:0; margin:5px 0; color:#595959;}
 p { margin:8px 0; padding:0 0 8px 0; font:normal 12px/1.8em Arial, Helvetica, sans-serif;}
 p.spec { text-align:right;}
-a { color:#2cadff; text-decoration:none;}
+a { color:#9a9a9a; text-decoration:none;}
 a:hover { text-decoration:underline;}
 a.rm, a.com { margin-left:8px; padding:9px 12px; background:url(../images/a_bg.gif) repeat-x top; text-decoration:none; color:#fff;}
 

@@ -15,10 +15,8 @@
         #auto_div {
             position: absolute;
             z-index: 999;
-            right: 564px;
-            top: 142px;
-            border: 1px solid #74c0f9;
-            display: none;
+            right: 565px;
+            top: 143px;
         }
         </style>
 </head>

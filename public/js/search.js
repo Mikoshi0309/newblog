@@ -30,7 +30,8 @@ function AutoComplete(auto, search) {
                             //document.querySelector("#auto_div").style.width = $("#search_text").outerWidth(true) + 'px'; //设置提示框与输入框宽度一致
                             document.querySelector("#auto_div").style.width = '220px';
                             newDivNode.attr("style", "font:14px/25px arial;height:25px;padding:0 8px;cursor: pointer;");
-                            newDivNode.html(wordNode.title).appendTo(autoNode); //追加到弹出框
+                            var wordNode_html = '<a href="/art/'+wordNode.id+'">'+wordNode.title+'</a>';
+                            newDivNode.html(wordNode_html).appendTo(autoNode); //追加到弹出框
                             //鼠标移入高亮，移开不高亮
                             newDivNode.mouseover(function() {
                                 if (highlightindex != -1) { //原来高亮的节点要取消高亮（是-1就不需要了）
