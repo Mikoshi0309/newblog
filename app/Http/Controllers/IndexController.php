@@ -105,4 +105,9 @@ class IndexController extends Controller
         ];
         return $data;
     }
+
+    public function ajaxsearch($str){
+        $article = Article::select(['id','title'])->where('title','like',"{$str}%")->get();
+        return json_encode(['error' => 0, 'info' => $article]);
+    }
 }

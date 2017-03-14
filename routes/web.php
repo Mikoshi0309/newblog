@@ -16,9 +16,11 @@ Route::get('/art/{id}', 'IndexController@show');
 Route::post('/search', 'IndexController@search');
 Route::get('/cate/{id}', 'IndexController@cate_article');
 Route::post('/comment', 'IndexController@comment');
+Route::get('/ajaxsearch/{str}', 'IndexController@ajaxsearch');
 
 Route::get('/sinalogin', 'SinaLoginController@login');
 Route::get('/callback', 'SinaLoginController@callback');
+
 
 
 

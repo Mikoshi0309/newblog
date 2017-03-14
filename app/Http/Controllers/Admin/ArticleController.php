@@ -197,6 +197,7 @@ class ArticleController extends Controller
      */
     public function destroy($id)
     {
+        //Article::findOrFail($id)
         $re = Article::where('id',$id)->delete();
         if($re){
             $this->articleRepository->clear();

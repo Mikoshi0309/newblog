@@ -9,7 +9,18 @@
     <script type="text/javascript" src="{{ asset('js/arial.js') }}"></script>
     <script type="text/javascript" src="{{ asset('js/cuf_run.js') }}"></script>
     <script type="text/javascript" src="{{ asset('layer/layer.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('js/search.js') }}"></script>
     <!-- CuFon ends -->
+    <style>
+        #auto_div {
+            position: absolute;
+            z-index: 999;
+            right: 564px;
+            top: 142px;
+            border: 1px solid #74c0f9;
+            display: none;
+        }
+        </style>
 </head>
 <body>
 <div class="main">
@@ -28,12 +39,14 @@
                     <li class="last"><a href="contact.html">Contact Us</a></li>
                 </ul>
                 <div class="search">
-                    <form id="form" name="form" method="post" action="{{ url('search/') }}">
+                    <form id="search-form" name="form" method="post" action="{{ url('search/') }}">
                         {{ csrf_field() }}
                         <span>
-                          <input name="key" type="text" class="keywords" id="textfield" maxlength="50" placeholder="请输入...." />
+                          <input name="key" type="text" class="keywords" id="search_text" maxlength="50" placeholder="请输入...." autocomplete="off"/>
+                            <div id="auto_div">
+                            </div>
                         </span>
-                        <input type="image" src="{{ asset('images/search.gif') }}" class="button" />
+                        <input type="image" src="{{ asset('images/search.gif') }}" />
 
                     </form>
                 </div>
@@ -69,4 +82,68 @@
     </div>
 </div>
 </body>
+<script>
+    $(function() {
+        //键盘操作
+        $("#search_text").keyup(function(event) {
+            //处理键盘操作
+            var myEvent = event || window.event;
+            var keyCode = myEvent.keyCode;
+            if (keyCode == 38 || keyCode == 40) {
+                if (keyCode == 38) { //向上
+                    var autoNodes = $("#auto_div").children("div");
+                    if (highlightindex != -1) {
+                        autoNodes.eq(highlightindex).css("background-color", "white");
+                        highlightindex--;
+                    } else {
+                        highlightindex = autoNodes.length - 1;
+                    }
+                    if (highlightindex == -1) {
+                        highlightindex = autoNodes.length - 1;
+                    }
+                    autoNodes.eq(highlightindex).css("background-color", "#ebebeb");
+                }
+                if (keyCode == 40) { //向下
+                    var autoNodes = $("#auto_div").children("div");
+                    if (highlightindex != -1) {
+                        autoNodes.eq(highlightindex).css("background-color", "white");
+                    }
+                    highlightindex++;
+                    if (highlightindex == autoNodes.length) {
+                        highlightindex = 0;
+                    }
+                    autoNodes.eq(highlightindex).css("background-color", "#ebebeb");
+                }
+            } else if (keyCode == 13) { //回车键
+                if (highlightindex != -1) {
+                    var comText = $("#auto_div").hide().children("div").eq(highlightindex).text();
+
+                    highlightindex = -1;
+                    $("#search_text").val(comText);
+                    if ($("#auto_div").is(":visible")) {
+                        $("#auto_div").css("display", "none")
+                    }
+                    $("#search-form").submit();
+                }
+            } else {
+                if ($("#search_text").val() == "") {
+                    $("#auto_div").hide();
+                } else {   //有文字输入时获取提示词
+                    AutoComplete("auto_div", "search_text");
+                }
+            }
+        });
+
+        //点击页面隐藏自动补全提示框
+        document.onclick = function(e) {
+            var e = e ? e : window.event;
+            var tar = e.srcElement || e.target;
+            if (tar.id != "search_text") {
+                if ($("#auto_div").is(":visible")) {
+                    $("#auto_div").css("display", "none")
+                }
+            }
+        }
+    });
+</script>
 </html>
